@@ -1,0 +1,28 @@
+server:
+  port: 8000
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8877/eureka
+spring:
+  application:
+    name: gateway-server
+  cloud:
+    gateway:
+      routes:
+        - id: member-service-get
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/**
+          filters:
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+
+        - id: other-service-get
+          uri: lb://OTHER-SERVICE
+          predicates:
+            - Path=/other-service/**
+          filters:
+            - RewritePath=/other-service/(?<segment>.*), /$\{segment}
